@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 import StrictEq
 
 import Database.SQLite3
@@ -699,8 +700,9 @@ testDecodeError TestEnv{..} = TestCase $ do
   withStatement conn "SELECT ?" $ \stmt -> do
     Right () <- Direct.bindText stmt 1 invalidUtf8
     Row <- step stmt
-    Left (DecodeError "Database.SQLite3.columnText: Invalid UTF-8" _)
-      <- try $ column stmt 0
+    (try $ column stmt 0) >>= \case
+      Left (DecodeError "Database.SQLite3.columnText: Invalid UTF-8" _) -> return ()
+      e -> error (show e)
     return ()
 
   -- Verify the assertion that SQLite3 does not validate UTF-8, by writing the
