@@ -35,6 +35,7 @@
 //#OPTIONS:EMCC:EXPORTED_FUNCTIONS=_sqlite3_backup_init,_sqlite3_backup_finish
 //#OPTIONS:EMCC:EXPORTED_FUNCTIONS=_sqlite3_backup_step,_sqlite3_backup_remaining
 //#OPTIONS:EMCC:EXPORTED_FUNCTIONS=_sqlite3_backup_pagecount
+//#OPTIONS:EMCC:EXPORTED_FUNCTIONS=_sqlite3_extended_result_codes
 
 
 // sqlite3_open ::  CString -> Ptr (Ptr CDatabase) -> IO CError
@@ -599,6 +600,11 @@ function h$sqlite3_blob_write(blob_d, blob_o, in_ptr_d, in_ptr_o, nbytes, offset
   return h$withCBufferOnHeap(in_ptr_d, in_ptr_o, nbytes, function(in_ptr) {
     return _sqlite3_blob_write(blob_o, in_ptr, nbytes, offset);
   });
+}
+
+// sqlite3_extended_result_codes :: Ptr CDatabase -> Bool -> IO CError
+function h$sqlite3_extended_result_codes(db_d, db_o, b) {
+  return _sqlite3_extended_result_codes(db_o, b);
 }
 
 // TODO:
